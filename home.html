@@ -1,239 +1,64 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Nota Bene</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Nota Bene</title>
+  <link rel="stylesheet" href="style.css"></link>
 </head>
 <body>
 
-    <header>
-        <div class="navbar">
-            <div class="site-title">Nota Bene</div>
-            <div class="profile">
-                <p>Utente: <span id="user-email"></span></p>
-                <a href="login.html">Logout</a>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <section class="welcome-section">
-            <h1>Benvenuto su Nota Bene</h1>
-        </section>
-
-        <section class="notes-section">
-            <h2>Note pubbliche</h2>
-
-            <div class="notes-content">
-                <aside class="tags-sidebar">
-                    <h3>Tag</h3>
-                    <ul class="tag-list" id="dynamic-tag-list">
-                        </ul>
-                    <h3 style="margin-top: 30px;">Cartelle</h3>
-                    <ul class="folder-list" id="dynamic-folder-list">
-                        </ul>
-                </aside>
-
-                <div class="notes-list">
-                    </div>
-            </div>
-        </section>
-
-        <section class="new-note-section">
-            <h2>Nuova nota</h2>
-            <form id="noteForm">
-                <label for="noteText">Contenuto della nota:</label>
-                <textarea id="noteText" rows="4" maxlength="280" placeholder="Scrivi la tua nota..." required></textarea>
-
-                <label for="noteTags">Tag (separati da virgola):</label>
-                <input type="text" id="noteTags" placeholder="es. #studio, #esami, #università">
-
-                <label for="noteFolder">Cartella:</label>
-                <input type="text" id="noteFolder" placeholder="es. Lezioni, Progetti, Annunci">
-
-                <button type="submit" class="add-note-btn">Pubblica Nota</button>
-            </form>
-            <div id="noteMessage"></div>
-        </section>
+<header>
+  <div class="navbar">
+    <div class="site-title">Nota Bene</div>
+    <div class="profile">
+      <p>Utente: <span id="user-email"></span></p>
+      <a href="login.html">Logout</a>
     </div>
+  </div>
+</header>
 
-    <footer>
-        <small>&copy; 2025 Nota Bene - Università di Bologna</small>
-    </footer>
+<div class="container">
+  <section class="welcome-section">
+    <h1>Benvenuto su Nota Bene</h1>
+  </section>
 
-    <script>
-        function mostraEmailUtente() {
-            const params = new URLSearchParams(window.location.search);
-            const username = params.get("user");
-            if (username) {
-                document.getElementById("user-email").textContent = username;
-                localStorage.setItem("utenteLoggato", username); // salva per uso successivo
-            } else {
-                window.location.href = "login.html"; // Reindirizza se non loggato
-            }
-        }
+  <section class="notes-section">
+    <h2>Note pubbliche</h2>
+    <div class="notes-content">
+      <aside class="tags-sidebar">
+        <h3>Tag</h3>
+        <ul class="tag-list" id="dynamic-tag-list"></ul>
+        <h3>Cartelle</h3>
+        <ul class="tag-list" id="dynamic-folder-list"></ul>
+      </aside>
+      <div class="notes-list"></div>
+    </div>
+  </section>
 
-        // Funzione per mostrare tag e cartelle nella sidebar
-        function aggiornaSidebarTagsECartelle(note) {
-            const tagList = document.getElementById("dynamic-tag-list");
-            const folderList = document.getElementById("dynamic-folder-list");
-            tagList.innerHTML = '';
-            folderList.innerHTML = '';
+  <section class="new-note-section">
+    <h2>Nuova nota</h2>
+    <form id="noteForm">
+      <label for="noteText">Contenuto della nota:</label>
+      <textarea id="noteText" rows="4" maxlength="280" placeholder="Scrivi la tua nota..." required></textarea>
 
-            const allTags = new Set();
-            const allFolders = new Set();
+      <label for="noteTags">Tag (separati da virgola):</label>
+      <input type="text" id="noteTags" placeholder="es. #studio, #esami, #università">
 
-            note.forEach(n => {
-                if (n.tag && Array.isArray(n.tag)) {
-                    n.tag.forEach(tag => allTags.add(tag.toLowerCase()));
-                }
-                if (n.cartella) {
-                    allFolders.add(n.cartella.toLowerCase());
-                }
-            });
+      <label for="noteFolder">Cartella:</label>
+      <input type="text" id="noteFolder" placeholder="es. Lezioni, Progetti, Annunci">
 
-            // Aggiungi tag alla sidebar
-            Array.from(allTags).sort().forEach(tag => {
-                const li = document.createElement("li");
-                // Modificato per permettere il filtro. L'href dovrebbe idealmente puntare a una funzione di filtro JS.
-                li.innerHTML = `<a href="#" data-filter-type="tag" data-filter-value="${tag}">#${tag}</a>`;
-                tagList.appendChild(li);
-            });
+      <button type="submit" class="add-note-btn">Pubblica Nota</button>
+      <p id="noteMessage"></p>
+    </form>
+  </section>
+</div>
 
-            // Aggiungi cartelle alla sidebar
-            Array.from(allFolders).sort().forEach(folder => {
-                const li = document.createElement("li");
-                // Modificato per permettere il filtro
-                li.innerHTML = `<a href="#" data-filter-type="folder" data-filter-value="${folder}">${folder}</a>`;
-                folderList.appendChild(li);
-            });
+<footer>
+  <small>&copy; 2025 Nota Bene - Università di Bologna</small>
+</footer>
+<script src="script.js"></script>
 
-            // Aggiungi listener per il filtro (al clic su tag/cartella)
-            document.querySelectorAll('.tags-sidebar a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const filterType = this.dataset.filterType;
-                    const filterValue = this.dataset.filterValue;
-                    mostraNotePubbliche(filterType, filterValue);
-                });
-            });
-        }
-
-
-        // Funzione per caricare e mostrare le note pubbliche (con filtro opzionale)
-        function mostraNotePubbliche(filterType = null, filterValue = null) {
-            const contenitore = document.querySelector(".notes-list");
-            contenitore.innerHTML = "";
-
-            const defaultNotes = [
-                { autore: "utente123", testo: "Questa è una nota pubblica di un altro utente.", tag: ["generale", "annunci"], cartella: "Avvisi", data: new Date(Date.now() - 86400000).toISOString() }, // 1 giorno fa
-                { autore: "federica94", testo: "Un’altra nota condivisa con tutti!", tag: ["appunti", "studio"], cartella: "Lezioni", data: new Date(Date.now() - 172800000).toISOString() }, // 2 giorni fa
-                { autore: "prof.rossi", testo: "Ricorda di controllare le scadenze per la tesi!", tag: ["università", "esami"], cartella: "Tesi", data: new Date().toISOString() }, // Ora
-                { autore: "studenteX", testo: "Domani lezione di analisi 2 alle 10:00 in aula magna.", tag: ["lezioni", "università"], cartella: "Lezioni", data: new Date(Date.now() - 345600000).toISOString() }, // 4 giorni fa
-                { autore: "admin", testo: "Avviso importante: Segreteria chiusa il 28 Giugno.", tag: ["annunci", "università"], cartella: "Avvisi", data: new Date(Date.now() - 604800000).toISOString() } // 7 giorni fa
-            ];
-
-            let noteSalvate = JSON.parse(localStorage.getItem("notePubbliche"));
-
-            if (!noteSalvate || noteSalvate.length === 0) {
-                localStorage.setItem("notePubbliche", JSON.stringify(defaultNotes));
-                noteSalvate = defaultNotes;
-            }
-
-            // Filtra le note se sono stati forniti tipo e valore di filtro
-            let noteDaVisualizzare = noteSalvate;
-            if (filterType && filterValue) {
-                noteDaVisualizzare = noteSalvate.filter(n => {
-                    if (filterType === 'tag' && n.tag && Array.isArray(n.tag)) {
-                        return n.tag.includes(filterValue);
-                    }
-                    if (filterType === 'folder' && n.cartella) {
-                        return n.cartella.toLowerCase() === filterValue;
-                    }
-                    return false;
-                });
-            }
-
-            noteDaVisualizzare.sort((a, b) => new Date(b.data) - new Date(a.data));
-
-            if (noteDaVisualizzare.length === 0) {
-                contenitore.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Nessuna nota trovata per i criteri selezionati.</p>';
-            } else {
-                noteDaVisualizzare.forEach(n => {
-                    const div = document.createElement("div");
-                    div.className = "note";
-
-                    let tagsHtml = '';
-                    if (n.tag && Array.isArray(n.tag) && n.tag.length > 0) {
-                        tagsHtml = `<div class="note-tags">${n.tag.map(tag => `<span>#${tag}</span>`).join('')}</div>`;
-                    }
-
-                    let folderHtml = n.cartella ? `<span class="note-folder">Cartella: ${n.cartella}</span>` : '';
-
-                    div.innerHTML = `
-                        <p class="note-text">${n.testo}</p>
-                        <div class="note-meta">
-                            ${tagsHtml}
-                            ${folderHtml}
-                        </div>
-                        <p class="note-author">— ${n.autore}</p>
-                    `;
-                    contenitore.appendChild(div);
-                });
-            }
-
-            aggiornaSidebarTagsECartelle(noteSalvate); // Aggiorna sidebar con tutti i tag/cartelle esistenti
-        }
-
-        // Gestione dell'invio del form per aggiungere una nuova nota
-        document.getElementById("noteForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-
-            const noteText = document.getElementById("noteText").value.trim();
-            const noteTags = document.getElementById("noteTags").value.trim().split(",").map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "");
-            const noteFolder = document.getElementById("noteFolder").value.trim();
-
-            const username = localStorage.getItem("utenteLoggato");
-
-            if (!noteText) {
-                document.getElementById("noteMessage").textContent = "Per favore, scrivi qualcosa nella nota.";
-                document.getElementById("noteMessage").style.color = "red";
-                return;
-            }
-            if (!username) {
-                document.getElementById("noteMessage").textContent = "Errore: utente non loggato. Effettua il login.";
-                document.getElementById("noteMessage").style.color = "red";
-                return;
-            }
-
-            const note = {
-                autore: username,
-                testo: noteText,
-                tag: noteTags,      // Salviamo i tag
-                cartella: noteFolder, // Salviamo la cartella
-                data: new Date().toISOString()
-            };
-
-            const noteSalvate = JSON.parse(localStorage.getItem("notePubbliche") || "[]");
-            noteSalvate.unshift(note);
-            localStorage.setItem("notePubbliche", JSON.stringify(noteSalvate));
-
-            document.getElementById("noteText").value = "";
-            document.getElementById("noteTags").value = "";
-            document.getElementById("noteFolder").value = "";
-            document.getElementById("noteMessage").textContent = "Nota pubblicata con successo!";
-            document.getElementById("noteMessage").style.color = "#28a745";
-
-            mostraNotePubbliche(); // Aggiorna la lista delle note e la sidebar
-        });
-
-        // Esegui queste funzioni al caricamento della pagina
-        mostraEmailUtente();
-        mostraNotePubbliche(); // Inizialmente mostra tutte le note
-    </script>
 
 </body>
 </html>
