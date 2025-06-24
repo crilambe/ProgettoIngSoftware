@@ -1,286 +1,62 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Nota Bene</title>
-  <style>
-    /* Stili Generali */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      background-color: #f4f7f6;
-      color: #333;
-      line-height: 1.6;
-    }
-
-    header {
-      background-color: #2c3e50;
-      color: white;
-      padding: 15px 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 900px;
-      margin: auto;
-      flex-wrap: wrap;
-    }
-
-    .site-title {
-      font-size: 1.8em;
-      font-weight: bold;
-      margin: 0;
-      color: white;
-    }
-
-    .profile {
-      text-align: right;
-    }
-
-    .profile p {
-      margin: 0 0 5px 0;
-      color: #e0e0e0;
-    }
-
-    .profile a {
-      color: #87ceeb;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .profile a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto; 
-      padding: 0 20px; 
-    }
-
-    .welcome-section,
-    .notes-section,
-    .new-note-section { 
-      background-color: #ffffff;
-      padding: 25px;
-      margin-bottom: 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    h1, h2 {
-      color: #2c3e50;
-      margin-top: 0;
-    }
-
-    h1 {
-      font-size: 2.2em;
-    }
-
-    h2 {
-      border-bottom: 2px solid #e0e0e0;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-    }
-
-    /* Layout a due colonne per le note */
-    .notes-content {
-        display: flex;
-        gap: 20px; 
-        flex-wrap: wrap; 
-    }
-
-    .tags-sidebar {
-        flex: 0 0 200px; /* Larghezza fissa per la sidebar dei tag */
-        background-color: #f8f8f8;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #eee;
-        align-self: flex-start; 
-    }
-
-    .tags-sidebar h3 {
-        margin-top: 0;
-        color: #555;
-        font-size: 1.1em;
-        margin-bottom: 15px;
-    }
-
-    .tag-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .tag-list li {
-        margin-bottom: 8px;
-    }
-
-    .tag-list a {
-        text-decoration: none;
-        color: #007bff;
-        padding: 5px 10px;
-        background-color: #e9f5ff;
-        border-radius: 4px;
-        transition: background-color 0.2s ease;
-        display: inline-block; 
-    }
-
-    .tag-list a:hover {
-        background-color: #cce0ff;
-    }
-
-    .notes-list {
-        flex-grow: 1; 
-        min-width: 300px; 
-    }
-
-    .note {
-      border: 1px solid #e0e0e0;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      background-color: #fdfdfd;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-    }
-
-    .note-text {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #444;
-    }
-
-    .note-author {
-      font-weight: bold;
-      color: #007bff;
-      text-align: right;
-      display: block;
-      font-size: 0.9em;
-    }
-
-    .add-note-btn {
-      background-color: #28a745;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background-color 0.3s ease;
-    }
-
-    .add-note-btn:hover {
-      background-color: #218838;
-    }
-
-    footer {
-      background-color: #34495e;
-      color: white;
-      text-align: center;
-      font-size: 0.9em;
-      padding: 20px;
-      margin-top: 30px;
-      box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    footer small {
-        color: #e0e0e0;
-    }
-
-    @media (max-width: 768px) { 
-      .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .profile {
-        width: 100%;
-        text-align: left;
-        margin-top: 15px;
-      }
-      .container {
-        padding: 0 15px;
-      }
-      .welcome-section,
-      .notes-section,
-      .new-note-section {
-        padding: 15px;
-      }
-      .notes-content {
-        flex-direction: column; 
-      }
-      .tags-sidebar {
-        flex: auto; 
-        width: 100%; 
-        margin-bottom: 20px; 
-      }
-      .notes-list {
-        min-width: unset; 
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Nota Bene</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
         <div class="navbar">
-        <div class="site-title">Nota Bene</div>
-        <div class="profile">
-            <p>Utente: <span id="user-email"></span></p>
-            <a href="login.html">Logout</a>
-        </div>
+            <div class="site-title">Nota Bene</div>
+            <div class="profile">
+                <p>Utente: <span id="user-email"></span></p>
+                <a href="login.html">Logout</a>
+            </div>
         </div>
     </header>
 
     <div class="container">
         <section class="welcome-section">
-        <h1>Benvenuto su Nota Bene</h1>
+            <h1>Benvenuto su Nota Bene</h1>
         </section>
 
         <section class="notes-section">
-        <h2>Note pubbliche</h2>
-        
-        <div class="notes-content">
-            <aside class="tags-sidebar">
-            <h3>Tag</h3>
-            <ul class="tag-list">
-                <li><a href="#">#Università</a></li>
-                <li><a href="#">#Esami</a></li>
-                <li><a href="#">#Lezioni</a></li>
-                <li><a href="#">#Appunti</a></li>
-                <li><a href="#">#Annunci</a></li>
-                <li><a href="#">#Generale</a></li>
-            </ul>
-            </aside>
+            <h2>Note pubbliche</h2>
 
-            <div class="notes-list">
-            <div class="note">
-                <p class="note-text">Questa è una nota pubblica di un altro utente.</p>
-                <p class="note-author">— utente123</p>
+            <div class="notes-content">
+                <aside class="tags-sidebar">
+                    <h3>Tag</h3>
+                    <ul class="tag-list" id="dynamic-tag-list">
+                        </ul>
+                    <h3 style="margin-top: 30px;">Cartelle</h3>
+                    <ul class="folder-list" id="dynamic-folder-list">
+                        </ul>
+                </aside>
+
+                <div class="notes-list">
+                    </div>
             </div>
-            
-            <div class="note">
-                <p class="note-text">Un’altra nota condivisa con tutti!</p>
-                <p class="note-author">— federica94</p>
-            </div>
-            
-            <div class="note">
-                <p class="note-text">Ricorda di controllare le scadenze per la tesi!</p>
-                <p class="note-author">— prof.rossi</p>
-            </div>
-            
-            </div>
-        </div>
         </section>
 
         <section class="new-note-section">
-        <h2>Nuova nota</h2>
-        <button class="add-note-btn" onclick="alert('Funzionalità in costruzione')">Aggiungi Nota</button>
+            <h2>Nuova nota</h2>
+            <form id="noteForm">
+                <label for="noteText">Contenuto della nota:</label>
+                <textarea id="noteText" rows="4" maxlength="280" placeholder="Scrivi la tua nota..." required></textarea>
+
+                <label for="noteTags">Tag (separati da virgola):</label>
+                <input type="text" id="noteTags" placeholder="es. #studio, #esami, #università">
+
+                <label for="noteFolder">Cartella:</label>
+                <input type="text" id="noteFolder" placeholder="es. Lezioni, Progetti, Annunci">
+
+                <button type="submit" class="add-note-btn">Pubblica Nota</button>
+            </form>
+            <div id="noteMessage"></div>
         </section>
     </div>
 
@@ -289,18 +65,175 @@
     </footer>
 
     <script>
-    function mostraEmailUtente() {
-      const params = new URLSearchParams(window.location.search);
-      const username = params.get("user");
+        function mostraEmailUtente() {
+            const params = new URLSearchParams(window.location.search);
+            const username = params.get("user");
+            if (username) {
+                document.getElementById("user-email").textContent = username;
+                localStorage.setItem("utenteLoggato", username); // salva per uso successivo
+            } else {
+                window.location.href = "login.html"; // Reindirizza se non loggato
+            }
+        }
 
-      if (username) {
-        document.getElementById("user-email").textContent = username;
-      } else {
-        window.location.href = "login.html";
-      }
-    }
+        // Funzione per mostrare tag e cartelle nella sidebar
+        function aggiornaSidebarTagsECartelle(note) {
+            const tagList = document.getElementById("dynamic-tag-list");
+            const folderList = document.getElementById("dynamic-folder-list");
+            tagList.innerHTML = '';
+            folderList.innerHTML = '';
 
-    mostraEmailUtente();
-  </script>
+            const allTags = new Set();
+            const allFolders = new Set();
+
+            note.forEach(n => {
+                if (n.tag && Array.isArray(n.tag)) {
+                    n.tag.forEach(tag => allTags.add(tag.toLowerCase()));
+                }
+                if (n.cartella) {
+                    allFolders.add(n.cartella.toLowerCase());
+                }
+            });
+
+            // Aggiungi tag alla sidebar
+            Array.from(allTags).sort().forEach(tag => {
+                const li = document.createElement("li");
+                // Modificato per permettere il filtro. L'href dovrebbe idealmente puntare a una funzione di filtro JS.
+                li.innerHTML = `<a href="#" data-filter-type="tag" data-filter-value="${tag}">#${tag}</a>`;
+                tagList.appendChild(li);
+            });
+
+            // Aggiungi cartelle alla sidebar
+            Array.from(allFolders).sort().forEach(folder => {
+                const li = document.createElement("li");
+                // Modificato per permettere il filtro
+                li.innerHTML = `<a href="#" data-filter-type="folder" data-filter-value="${folder}">${folder}</a>`;
+                folderList.appendChild(li);
+            });
+
+            // Aggiungi listener per il filtro (al clic su tag/cartella)
+            document.querySelectorAll('.tags-sidebar a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filterType = this.dataset.filterType;
+                    const filterValue = this.dataset.filterValue;
+                    mostraNotePubbliche(filterType, filterValue);
+                });
+            });
+        }
+
+
+        // Funzione per caricare e mostrare le note pubbliche (con filtro opzionale)
+        function mostraNotePubbliche(filterType = null, filterValue = null) {
+            const contenitore = document.querySelector(".notes-list");
+            contenitore.innerHTML = "";
+
+            const defaultNotes = [
+                { autore: "utente123", testo: "Questa è una nota pubblica di un altro utente.", tag: ["generale", "annunci"], cartella: "Avvisi", data: new Date(Date.now() - 86400000).toISOString() }, // 1 giorno fa
+                { autore: "federica94", testo: "Un’altra nota condivisa con tutti!", tag: ["appunti", "studio"], cartella: "Lezioni", data: new Date(Date.now() - 172800000).toISOString() }, // 2 giorni fa
+                { autore: "prof.rossi", testo: "Ricorda di controllare le scadenze per la tesi!", tag: ["università", "esami"], cartella: "Tesi", data: new Date().toISOString() }, // Ora
+                { autore: "studenteX", testo: "Domani lezione di analisi 2 alle 10:00 in aula magna.", tag: ["lezioni", "università"], cartella: "Lezioni", data: new Date(Date.now() - 345600000).toISOString() }, // 4 giorni fa
+                { autore: "admin", testo: "Avviso importante: Segreteria chiusa il 28 Giugno.", tag: ["annunci", "università"], cartella: "Avvisi", data: new Date(Date.now() - 604800000).toISOString() } // 7 giorni fa
+            ];
+
+            let noteSalvate = JSON.parse(localStorage.getItem("notePubbliche"));
+
+            if (!noteSalvate || noteSalvate.length === 0) {
+                localStorage.setItem("notePubbliche", JSON.stringify(defaultNotes));
+                noteSalvate = defaultNotes;
+            }
+
+            // Filtra le note se sono stati forniti tipo e valore di filtro
+            let noteDaVisualizzare = noteSalvate;
+            if (filterType && filterValue) {
+                noteDaVisualizzare = noteSalvate.filter(n => {
+                    if (filterType === 'tag' && n.tag && Array.isArray(n.tag)) {
+                        return n.tag.includes(filterValue);
+                    }
+                    if (filterType === 'folder' && n.cartella) {
+                        return n.cartella.toLowerCase() === filterValue;
+                    }
+                    return false;
+                });
+            }
+
+            noteDaVisualizzare.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            if (noteDaVisualizzare.length === 0) {
+                contenitore.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Nessuna nota trovata per i criteri selezionati.</p>';
+            } else {
+                noteDaVisualizzare.forEach(n => {
+                    const div = document.createElement("div");
+                    div.className = "note";
+
+                    let tagsHtml = '';
+                    if (n.tag && Array.isArray(n.tag) && n.tag.length > 0) {
+                        tagsHtml = `<div class="note-tags">${n.tag.map(tag => `<span>#${tag}</span>`).join('')}</div>`;
+                    }
+
+                    let folderHtml = n.cartella ? `<span class="note-folder">Cartella: ${n.cartella}</span>` : '';
+
+                    div.innerHTML = `
+                        <p class="note-text">${n.testo}</p>
+                        <div class="note-meta">
+                            ${tagsHtml}
+                            ${folderHtml}
+                        </div>
+                        <p class="note-author">— ${n.autore}</p>
+                    `;
+                    contenitore.appendChild(div);
+                });
+            }
+
+            aggiornaSidebarTagsECartelle(noteSalvate); // Aggiorna sidebar con tutti i tag/cartelle esistenti
+        }
+
+        // Gestione dell'invio del form per aggiungere una nuova nota
+        document.getElementById("noteForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const noteText = document.getElementById("noteText").value.trim();
+            const noteTags = document.getElementById("noteTags").value.trim().split(",").map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "");
+            const noteFolder = document.getElementById("noteFolder").value.trim();
+
+            const username = localStorage.getItem("utenteLoggato");
+
+            if (!noteText) {
+                document.getElementById("noteMessage").textContent = "Per favore, scrivi qualcosa nella nota.";
+                document.getElementById("noteMessage").style.color = "red";
+                return;
+            }
+            if (!username) {
+                document.getElementById("noteMessage").textContent = "Errore: utente non loggato. Effettua il login.";
+                document.getElementById("noteMessage").style.color = "red";
+                return;
+            }
+
+            const note = {
+                autore: username,
+                testo: noteText,
+                tag: noteTags,      // Salviamo i tag
+                cartella: noteFolder, // Salviamo la cartella
+                data: new Date().toISOString()
+            };
+
+            const noteSalvate = JSON.parse(localStorage.getItem("notePubbliche") || "[]");
+            noteSalvate.unshift(note);
+            localStorage.setItem("notePubbliche", JSON.stringify(noteSalvate));
+
+            document.getElementById("noteText").value = "";
+            document.getElementById("noteTags").value = "";
+            document.getElementById("noteFolder").value = "";
+            document.getElementById("noteMessage").textContent = "Nota pubblicata con successo!";
+            document.getElementById("noteMessage").style.color = "#28a745";
+
+            mostraNotePubbliche(); // Aggiorna la lista delle note e la sidebar
+        });
+
+        // Esegui queste funzioni al caricamento della pagina
+        mostraEmailUtente();
+        mostraNotePubbliche(); // Inizialmente mostra tutte le note
+    </script>
+
 </body>
 </html>
