@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const messageDiv = document.getElementById("message");
   const registerForm = document.getElementById("registerForm");
   const loginForm = document.getElementById("loginForm");
-  const messageDiv = document.getElementById("message");
 
+  // --- LOGIN/REGISTER (se presenti su questa pagina) ---
   if (registerForm) {
     registerForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -14,18 +15,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Controllo se l'utente esiste già
       const users = JSON.parse(localStorage.getItem("users") || "{}");
       if (users[username]) {
         messageDiv.textContent = "Utente già registrato.";
         return;
       }
 
-      // Salva l'utente
       users[username] = password;
       localStorage.setItem("users", JSON.stringify(users));
 
-      // Redirect al login
       alert("Registrazione completata! Ora puoi accedere.");
       window.location.href = "login.html";
     });
@@ -49,157 +47,156 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Login riuscito
-      window.location.href = "home.html?user=" + encodeURIComponent(username);
+      localStorage.setItem("utenteLoggato", username);
+      window.location.href = "home.html";
     });
   }
 
   function mostraEmailUtente() {
-  const params = new URLSearchParams(window.location.search);
-  const username = params.get("user");
-  if (username) {
-    document.getElementById("user-email").textContent = username;
-    localStorage.setItem("utenteLoggato", username);
-  } else {
-    window.location.href = "login.html";
+    const username = localStorage.getItem("utenteLoggato");
+    if (username) {
+      const userEmailSpan = document.getElementById("user-email");
+      if (userEmailSpan) {
+        userEmailSpan.textContent = username;
+      }
+    } else {
+      window.location.href = "login.html";
+    }
   }
-}
 
-function aggiornaSidebarTagsECartelle(note) {
-  const tagList = document.getElementById("dynamic-tag-list");
-  const folderList = document.getElementById("dynamic-folder-list");
-  tagList.innerHTML = '';
-  folderList.innerHTML = '';
+  mostraEmailUtente();
 
-  const allTags = new Set();
-  const allFolders = new Set();
+  function aggiornaSidebarTagsECartelle(note) {
+    const tagList = document.getElementById("dynamic-tag-list");
+    const folderList = document.getElementById("dynamic-folder-list");
+    if (!tagList || !folderList) return;
 
-  note.forEach(n => {
-    if (n.tag && Array.isArray(n.tag)) {
-      n.tag.forEach(tag => allTags.add(tag.toLowerCase()));
-    }
-    if (n.cartella) {
-      allFolders.add(n.cartella.toLowerCase());
-    }
-  });
+    tagList.innerHTML = '';
+    folderList.innerHTML = '';
 
-  Array.from(allTags).sort().forEach(tag => {
-    const li = document.createElement("li");
-    li.innerHTML = `<a href="#" data-filter-type="tag" data-filter-value="${tag}">#${tag}</a>`;
-    tagList.appendChild(li);
-  });
+    const allTags = new Set();
+    const allFolders = new Set();
 
-  Array.from(allFolders).sort().forEach(folder => {
-    const li = document.createElement("li");
-    li.innerHTML = `<a href="#" data-filter-type="folder" data-filter-value="${folder}">${folder}</a>`;
-    folderList.appendChild(li);
-  });
-
-  document.querySelectorAll('.tags-sidebar a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const filterType = this.dataset.filterType;
-      const filterValue = this.dataset.filterValue;
-      mostraNotePubbliche(filterType, filterValue);
+    note.forEach(n => {
+      (n.tag || []).forEach(tag => allTags.add(tag));
+      if (n.cartella) allFolders.add(n.cartella);
     });
-  });
-}
 
-function mostraNotePubbliche(filterType = null, filterValue = null) {
-  const contenitore = document.querySelector(".notes-list");
-  contenitore.innerHTML = "";
-
-  const noteSalvate = JSON.parse(localStorage.getItem("notePubbliche") || "[]");
-  const username = localStorage.getItem("utenteLoggato");
-
-  let noteDaVisualizzare = noteSalvate;
-  if (filterType && filterValue) {
-    noteDaVisualizzare = noteSalvate.filter(n => {
-      if (filterType === 'tag' && n.tag) return n.tag.includes(filterValue);
-      if (filterType === 'folder' && n.cartella) return n.cartella.toLowerCase() === filterValue;
-      return false;
+    [...allTags].sort().forEach(tag => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="#" data-filter-type="tag" data-filter-value="${tag}">#${tag}</a>`;
+      tagList.appendChild(li);
     });
-  }
 
-  noteDaVisualizzare.sort((a, b) => new Date(b.data) - new Date(a.data));
+    [...allFolders].sort().forEach(folder => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="#" data-filter-type="folder" data-filter-value="${folder}">${folder}</a>`;
+      folderList.appendChild(li);
+    });
 
-  if (noteDaVisualizzare.length === 0) {
-    contenitore.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Nessuna nota trovata per i criteri selezionati.</p>';
-    return;
-  }
-
-  noteDaVisualizzare.forEach((n, index) => {
-    const div = document.createElement("div");
-    div.className = "note";
-
-    let tagsHtml = '';
-    if (n.tag?.length) {
-      tagsHtml = `<div class="note-tags">${n.tag.map(tag => `<span>#${tag}</span>`).join(' ')}</div>`;
-    }
-
-    let folderHtml = n.cartella ? `<span class="note-folder">Cartella: ${n.cartella}</span>` : '';
-
-    div.innerHTML = `
-      <p class="note-text">${n.testo}</p>
-      <div class="note-meta">${tagsHtml} ${folderHtml}</div>
-      <p class="note-author">— ${n.autore}</p>
-    `;
-
-    if (n.autore === username) {
-      const deleteBtn = document.createElement("button");
-      deleteBtn.className = "delete-note-btn";
-      deleteBtn.textContent = "Elimina";
-      deleteBtn.addEventListener("click", () => {
-        const tutteNote = JSON.parse(localStorage.getItem("notePubbliche") || "[]");
-        const indexToRemove = tutteNote.findIndex(note =>
-          note.testo === n.testo &&
-          note.data === n.data &&
-          note.autore === n.autore
-        );
-        if (indexToRemove !== -1) {
-          tutteNote.splice(indexToRemove, 1);
-          localStorage.setItem("notePubbliche", JSON.stringify(tutteNote));
-          mostraNotePubbliche();
-        }
+    document.querySelectorAll('.tags-sidebar a, #dynamic-folder-list a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        mostraNotePubbliche(this.dataset.filterType, this.dataset.filterValue);
       });
-      div.appendChild(deleteBtn);
+    });
+  }
+
+  function mostraNotePubbliche(filterType = null, filterValue = null) {
+    const contenitore = document.querySelector(".notes-list");
+    contenitore.innerHTML = "";
+
+    const notePubbliche = JSON.parse(localStorage.getItem("notePubbliche") || "[]");
+    let noteDaMostrare = notePubbliche;
+
+    if (filterType && filterValue) {
+      if (filterType === "tag") {
+        noteDaMostrare = noteDaMostrare.filter(n => (n.tag || []).includes(filterValue));
+      } else if (filterType === "folder") {
+        noteDaMostrare = noteDaMostrare.filter(n => n.cartella === filterValue);
+      }
     }
 
-    contenitore.appendChild(div);
-  });
+    if (noteDaMostrare.length === 0) {
+      contenitore.innerHTML = "<p>Nessuna nota pubblica disponibile.</p>";
+      return;
+    }
 
-  aggiornaSidebarTagsECartelle(noteSalvate);
-}
+    noteDaMostrare.forEach(n => {
+      const div = document.createElement("div");
+      div.className = "note";
+      div.innerHTML = `
+        <p>${n.testo}</p>
+        <p><small>Autore: ${n.autore}</small></p>
+        <p><small>Tag: ${n.tag.join(", ")}</small></p>
+        <p><small>Cartella: ${n.cartella || "Nessuna"}</small></p>
+      `;
+      contenitore.appendChild(div);
+    });
 
-document.getElementById("noteForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const noteText = document.getElementById("noteText").value.trim();
-  const noteTags = document.getElementById("noteTags").value.trim().split(",").map(tag => tag.trim().toLowerCase()).filter(tag => tag);
-  const noteFolder = document.getElementById("noteFolder").value.trim();
-  const username = localStorage.getItem("utenteLoggato");
+    aggiornaSidebarTagsECartelle(noteDaMostrare);
+  }
 
-  if (!noteText || !username) return;
+  const noteForm = document.getElementById("noteForm");
+  if (noteForm) {
+    noteForm.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-  const nota = {
-    autore: username,
-    testo: noteText,
-    tag: noteTags,
-    cartella: noteFolder,
-    data: new Date().toISOString()
-  };
+      const noteText = document.getElementById("noteText").value.trim();
+      const noteTags = document.getElementById("noteTags").value.trim().split(",").map(t => t.trim().toLowerCase()).filter(t => t);
+      const noteFolder = document.getElementById("noteFolder").value.trim();
+      const publicRadio = document.querySelector('input[name="noteVisibility"]:checked');
+      const isPublic = publicRadio ? publicRadio.value === "pubblica" : false;
 
-  const noteSalvate = JSON.parse(localStorage.getItem("notePubbliche") || "[]");
-  noteSalvate.unshift(nota);
-  localStorage.setItem("notePubbliche", JSON.stringify(noteSalvate));
+      const username = localStorage.getItem("utenteLoggato");
+      if (!noteText || !username) return;
 
-  document.getElementById("noteForm").reset();
-  document.getElementById("noteMessage").textContent = "Nota pubblicata con successo!";
-  document.getElementById("noteMessage").style.color = "#28a745";
+      const nuovaNota = {
+        content: noteText,
+        tags: noteTags.join(", "),
+        folder: noteFolder,
+        public: isPublic,
+        allowEdit: false
+      };
+
+      const userNotes = JSON.parse(localStorage.getItem("userNotes") || "[]");
+      userNotes.unshift(nuovaNota);
+      localStorage.setItem("userNotes", JSON.stringify(userNotes));
+
+      if (isPublic) {
+        aggiornaNotePubbliche(username);
+      }
+
+      noteForm.reset();
+      const noteMessage = document.getElementById("noteMessage");
+      if (noteMessage) {
+        noteMessage.textContent = "Nota salvata!";
+        noteMessage.style.color = "#28a745";
+      }
+
+      mostraNotePubbliche();
+    });
+  }
+
+  function aggiornaNotePubbliche(username) {
+    const allUsers = JSON.parse(localStorage.getItem("users") || "{}");
+    const noteUtente = JSON.parse(localStorage.getItem("userNotes") || "[]");
+
+    const notePubbliche = JSON.parse(localStorage.getItem("notePubbliche") || "[]")
+      .filter(n => n.autore !== username);
+
+    const nuoveNote = noteUtente.filter(n => n.public).map(n => ({
+      autore: username,
+      testo: n.content,
+      tag: (n.tags || "").split(",").map(t => t.trim().toLowerCase()),
+      cartella: n.folder,
+      data: new Date().toISOString(),
+      allowEdit: n.allowEdit,
+      public: true
+    }));
+
+    localStorage.setItem("notePubbliche", JSON.stringify([...notePubbliche, ...nuoveNote]));
+  }
 
   mostraNotePubbliche();
-});
-
-mostraEmailUtente();
-mostraNotePubbliche();
-
 });

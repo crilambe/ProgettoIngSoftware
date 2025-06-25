@@ -91,6 +91,21 @@ h2 {
     margin-bottom: 25px;
 }
 
+.btn-new-note {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-new-note:hover {
+  background-color: #0056b3;
+}
+
 /* Layout a due colonne per le note */
 .notes-content {
     display: flex;
@@ -264,10 +279,29 @@ h2 {
       cursor: pointer;
       font-size: 0.9em;
       transition: background-color 0.3s ease;
+      margin-top: 5px;
+      margin-bottom: 5px;
 }
 
 .delete-note-btn:hover {
     background-color: #c82333;
+}
+
+.save-note-btn {
+      background-color: #1dd335;
+      color: white;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background-color 0.3s ease;
+      margin-top: 5px;
+      margin-bottom: 5px;
+}
+
+.save-note-btn:hover {
+    background-color: #1ee439;
 }
 
 #noteMessage {
