@@ -128,6 +128,10 @@ $stmt->close();
               <p><strong>Data di creazione:</strong> <?= htmlspecialchars($nota['data_creazione']) ?></p>
               <p><strong>Ultima modifica:</strong> <?= htmlspecialchars($nota['data_ultima_modifica']) ?></p>
               <a href="copy_note.php?id=<?= $nota['id'] ?>" class="btn-copy">Copia</a>
+              <?php if ($nota['allow_edit']): ?>
+                <a href="form_modifica.php?id=<?= $nota['id'] ?>" class="btn-edit">Modifica</a>
+              <?php endif; ?>
+
             </div>
           <?php endforeach; ?>
         <?php else: ?>
@@ -143,6 +147,3 @@ $stmt->close();
 </footer>
 </body>
 </html>
-
-
-
