@@ -57,14 +57,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <?php endif; ?>
 
   <form method="post">
-    <input type="text" name="titolo" placeholder="Titolo della nota" required><br><br>
-    <textarea name="testo" rows="5" cols="50" placeholder="Scrivi la tua nota qui..." required></textarea><br><br>
-    <input type="text" name="tag" placeholder="Tag (es. scuola, personale)"><br><br>
-    <input type="text" name="cartella" placeholder="Cartella (es. lavoro, idee)"><br><br>
-    <label><input type="checkbox" name="pubblica"> Pubblica</label><br>
-    <label><input type="checkbox" name="allow_edit"> Consenti modifiche agli altri</label><br><br>
-    <button type="submit">Salva nota</button>
-  </form>
+    <input type="text" name="titolo" class="form-control" placeholder="Titolo della nota" required><br>
+    <textarea name="testo" rows="5" class="form-control" placeholder="Scrivi la tua nota qui..." required></textarea><br>
+    <input type="text" name="tag" class="form-control" placeholder="Tag (es. scuola, personale)"><br>
+    <input type="text" name="cartella" class="form-control" placeholder="Cartella (es. lavoro, università)"><br>
+
+    <div class="checkbox-group">
+      <label class="checkbox-label">
+        <input type="checkbox" name="pubblica"> Rendi pubblica
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="allow_edit"> Permetti modifica ad altri
+      </label>
+    </div>
+    <br> <button type="submit" class="add-note-btn">Salva Nota</button>
 </main>
 
 <footer>

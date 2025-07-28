@@ -10,62 +10,69 @@ if (!isset($_SESSION['utente'])) {
 // Controllo della ricerca
 $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
 $searchDate = isset($_GET['date']) ? $_GET['date'] : '';
+$filterTag = isset($_GET['tag']) ? trim($_GET['tag']) : '';
+$filterCartella = isset($_GET['cartella']) ? trim($_GET['cartella']) : '';
 
 // Preparazione della query di ricerca
 $query = "SELECT * FROM Note WHERE pubblica = 1";
+$conditions = [];
+$params = [];
+$types = "";
 
-if ($searchTerm || $searchDate) {
-    $query .= " AND (";
-    $conditions = [];
-
-    // Ricerca per parole
-    if ($searchTerm) {
-        $searchTerm = "%" . $searchTerm . "%";
-        $conditions[] = "titolo LIKE ? OR testo LIKE ? OR tag LIKE ? OR cartella LIKE ?";
-    }
-
-    // Ricerca per data (creazione o modifica)
-    if ($searchDate) {
-        $conditions[] = "(data_creazione BETWEEN ? AND ? OR data_ultima_modifica BETWEEN ? AND ?)";
-    }
-
-    $query .= implode(" OR ", $conditions) . ")";
+// Ricerca testuale
+if ($searchTerm) {
+    $searchWildcard = "%" . $searchTerm . "%";
+    $conditions[] = "(titolo LIKE ? OR testo LIKE ? OR tag LIKE ? OR cartella LIKE ?)";
+    $params = array_merge($params, [$searchWildcard, $searchWildcard, $searchWildcard, $searchWildcard]);
+    $types .= "ssss";
 }
 
+// Filtro per tag
+if ($filterTag) {
+    $conditions[] = "tag = ?";
+    $params[] = $filterTag;
+    $types .= "s";
+}
+
+// Filtro per cartella
+if ($filterCartella) {
+    $conditions[] = "cartella = ?";
+    $params[] = $filterCartella;
+    $types .= "s";
+}
+
+// Filtro per data
+if ($searchDate) {
+    $conditions[] = "(data_creazione BETWEEN ? AND ? OR data_ultima_modifica BETWEEN ? AND ?)";
+    $startDate = $searchDate . " 00:00:00";
+    $endDate = $searchDate . " 23:59:59";
+    $params = array_merge($params, [$startDate, $endDate, $startDate, $endDate]);
+    $types .= "ssss";
+}
+
+// Aggiungi condizioni alla query
+if (count($conditions) > 0) {
+    $query .= " AND " . implode(" AND ", $conditions);
+}
+
+// Prepara ed esegui
 $stmt = $conn->prepare($query);
-
-// Binding dei parametri
-if ($searchTerm || $searchDate) {
-    $types = '';
-    $params = [];
-
-    // Binding per parole
-    if ($searchTerm) {
-        $params[] = $searchTerm;
-        $params[] = $searchTerm;
-        $params[] = $searchTerm;
-        $params[] = $searchTerm;
-        $types .= 'ssss';
-    }
-
-    // Binding per data
-    if ($searchDate) {
-        $startDate = $searchDate . " 00:00:00";
-        $endDate = $searchDate . " 23:59:59";
-        $params[] = $startDate;
-        $params[] = $endDate;
-        $params[] = $startDate;
-        $params[] = $endDate;
-        $types .= 'ssss';
-    }
-
+if (!empty($params)) {
     $stmt->bind_param($types, ...$params);
 }
-
 $stmt->execute();
 $result = $stmt->get_result();
 $notePubbliche = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Sidebar: tag e cartelle
+$queryTags = "SELECT DISTINCT tag FROM Note WHERE pubblica = 1 AND tag IS NOT NULL AND tag != ''";
+$resultTags = $conn->query($queryTags);
+$tags = $resultTags->fetch_all(MYSQLI_ASSOC);
+
+$queryCartelle = "SELECT DISTINCT cartella FROM Note WHERE pubblica = 1 AND cartella IS NOT NULL AND cartella != ''";
+$resultCartelle = $conn->query($queryCartelle);
+$cartelle = $resultCartelle->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -100,22 +107,38 @@ $stmt->close();
 
     <!-- Modulo di ricerca -->
     <form method="GET" class="search-form">
-      <input type="text" name="search" placeholder="Cerca per titolo, testo, tag o cartella..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>" />
-      <input type="date" name="date" value="<?= isset($_GET['date']) ? $_GET['date'] : '' ?>" />
+      <input type="text" name="search" placeholder="Cerca per titolo, testo, tag o cartella..." value="<?= htmlspecialchars($searchTerm) ?>" />
+      <input type="date" name="date" value="<?= htmlspecialchars($searchDate) ?>" />
       <button type="submit">Cerca</button>
     </form>
 
     <div class="notes-content">
       <aside class="tags-sidebar">
+        <h3><a href="home.php">Tutte le note</a></h3>
+
         <h3>Tag</h3>
         <ul class="tag-list">
-          <!-- Tag dinamici opzionali -->
+          <?php if (count($tags) > 0): ?>
+            <?php foreach ($tags as $t): ?>
+              <li><a href="home.php?tag=<?= urlencode($t['tag']) ?>"><?= htmlspecialchars($t['tag']) ?></a></li>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <li>Nessun tag disponibile</li>
+          <?php endif; ?>
         </ul>
+
         <h3>Cartelle</h3>
         <ul class="tag-list">
-          <!-- Cartelle dinamiche opzionali -->
+          <?php if (count($cartelle) > 0): ?>
+            <?php foreach ($cartelle as $c): ?>
+              <li><a href="home.php?cartella=<?= urlencode($c['cartella']) ?>"><?= htmlspecialchars($c['cartella']) ?></a></li>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <li>Nessuna cartella disponibile</li>
+          <?php endif; ?>
         </ul>
       </aside>
+
       <div class="notes-list">
         <?php if (count($notePubbliche) > 0): ?>
           <?php foreach ($notePubbliche as $nota): ?>
@@ -131,11 +154,10 @@ $stmt->close();
               <?php if ($nota['allow_edit']): ?>
                 <a href="form_modifica.php?id=<?= $nota['id'] ?>" class="btn-edit">Modifica</a>
               <?php endif; ?>
-
             </div>
           <?php endforeach; ?>
         <?php else: ?>
-          <p>Nessun risultato trovato per la tua ricerca.</p>
+          <p>Nessun risultato trovato.</p>
         <?php endif; ?>
       </div>
     </div>

@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
 include 'db_connection.php';
 
@@ -36,31 +32,53 @@ if (!$nota) {
 <head>
   <meta charset="UTF-8">
   <title>Modifica Nota</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 </head>
 <body>
-  <h1>Modifica Nota</h1>
-  <form action="update_note.php" method="post">
-    <input type="hidden" name="note_id" value="<?= $nota['id'] ?>">
-    
-    <label>Testo:</label><br>
-    <textarea name="testo" rows="5" cols="50"><?= htmlspecialchars($nota['testo']) ?></textarea><br><br>
-    
-    <label>Tag:</label><br>
-    <input type="text" name="tag" value="<?= htmlspecialchars($nota['tag']) ?>"><br><br>
-    
-    <label>Cartella:</label><br>
-    <input type="text" name="cartella" value="<?= htmlspecialchars($nota['cartella']) ?>"><br><br>
-    
-    <label>
-      <input type="checkbox" name="pubblica" <?= $nota['pubblica'] ? 'checked' : '' ?>> Pubblica
-    </label><br>
-    <label>
-      <input type="checkbox" name="allow_edit" <?= $nota['allow_edit'] ? 'checked' : '' ?>> Modificabile da altri
-    </label><br><br>
-    
-    <button type="submit">Salva Modifiche</button>
-  </form>
-  <p><a href="profile.php">Torna al Profilo</a></p>
+<header>
+  <div class="navbar">
+    <div class="site-title">Nota Bene</div>
+    <div class="profile">
+      <p>Utente: <span><?= htmlspecialchars($utente) ?></span></p>
+      <a href="home.php">Home</a> |
+      <a href="logout.php">Logout</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="new-note-section">
+    <h1>Modifica Nota</h1>
+    <form action="update_note.php" method="post">
+      <input type="hidden" name="note_id" value="<?= $nota['id'] ?>">
+
+      <label>Testo:</label>
+      <textarea name="testo" rows="5" class="form-control" required><?= htmlspecialchars($nota['testo']) ?></textarea>
+
+      <label>Tag:</label>
+      <input type="text" name="tag" value="<?= htmlspecialchars($nota['tag']) ?>" class="form-control">
+
+      <label>Cartella:</label>
+      <input type="text" name="cartella" value="<?= htmlspecialchars($nota['cartella']) ?>" class="form-control">
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" name="pubblica" <?= $nota['pubblica'] ? 'checked' : '' ?>> Rendi pubblica
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="allow_edit" <?= $nota['allow_edit'] ? 'checked' : '' ?>> Permetti modifica ad altri
+        </label>
+      </div>
+      <br>
+
+      <button type="submit" class="btn-primary save-note-btn">Salva Modifiche</button>
+    </form>
+    <p><a href="profile.php" class="btn-primary" style="margin-top: 20px;">Torna al Profilo</a></p>
+  </section>
+</main>
+
+<footer>
+  <small>&copy; 2025 Nota Bene - Università di Bologna</small>
+</footer>
 </body>
 </html>
