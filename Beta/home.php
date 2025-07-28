@@ -127,6 +127,7 @@ $stmt->close();
               <p><strong>Cartella:</strong> <?= htmlspecialchars($nota['cartella']) ?></p>
               <p><strong>Data di creazione:</strong> <?= htmlspecialchars($nota['data_creazione']) ?></p>
               <p><strong>Ultima modifica:</strong> <?= htmlspecialchars($nota['data_ultima_modifica']) ?></p>
+              <a href="copy_note.php?id=<?= $nota['id'] ?>" class="btn-copy">Copia</a>
             </div>
           <?php endforeach; ?>
         <?php else: ?>
