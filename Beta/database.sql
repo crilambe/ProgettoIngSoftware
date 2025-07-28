@@ -32,11 +32,15 @@ DELIMITER ;
 CREATE TABLE Note (
     id INT AUTO_INCREMENT PRIMARY KEY,
     autore VARCHAR(100),
+    titolo VARCHAR(100),
     testo TEXT,
     tag VARCHAR(200),
     cartella VARCHAR(200),
     pubblica BOOLEAN DEFAULT FALSE,
     allow_edit BOOLEAN DEFAULT FALSE,
+    data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_ultima_modifica TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (autore) REFERENCES Utente(username)
 );
+
 

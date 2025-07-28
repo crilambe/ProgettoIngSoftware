@@ -11,14 +11,15 @@ $messaggio = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $autore = $_SESSION['utente'];
+    $titolo = $_POST['titolo'] ?? ''; // Titolo della nota
     $testo = $_POST['testo'] ?? '';
     $tag = $_POST['tag'] ?? '';
     $cartella = $_POST['cartella'] ?? '';
     $pubblica = isset($_POST['pubblica']) ? 1 : 0;
     $allow_edit = isset($_POST['allow_edit']) ? 1 : 0;
 
-    $stmt = $conn->prepare("INSERT INTO Note (autore, testo, tag, cartella, pubblica, allow_edit) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssii", $autore, $testo, $tag, $cartella, $pubblica, $allow_edit);
+    $stmt = $conn->prepare("INSERT INTO Note (autore, titolo, testo, tag, cartella, pubblica, allow_edit) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssii", $autore, $titolo, $testo, $tag, $cartella, $pubblica, $allow_edit);
     
     if ($stmt->execute()) {
         $messaggio = "Nota salvata con successo.";
@@ -56,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <?php endif; ?>
 
   <form method="post">
+    <input type="text" name="titolo" placeholder="Titolo della nota" required><br><br>
     <textarea name="testo" rows="5" cols="50" placeholder="Scrivi la tua nota qui..." required></textarea><br><br>
     <input type="text" name="tag" placeholder="Tag (es. scuola, personale)"><br><br>
     <input type="text" name="cartella" placeholder="Cartella (es. lavoro, idee)"><br><br>
