@@ -7,8 +7,6 @@ if (!isset($_SESSION['utente'])) {
     exit();
 }
 
-$messaggio = "";
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $autore = $_SESSION['utente'];
     $titolo = $_POST['titolo'] ?? ''; // Titolo della nota
@@ -22,12 +20,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->bind_param("sssssii", $autore, $titolo, $testo, $tag, $cartella, $pubblica, $allow_edit);
     
     if ($stmt->execute()) {
-        $messaggio = "Nota salvata con successo.";
+        // Reindirizza in base al tipo di nota
+        if ($pubblica) {
+            // Se la nota è pubblica, vai alla home
+            header("Location: home.php?msg=" . urlencode("Nota pubblica creata con successo!"));
+        } else {
+            // Se la nota è privata, vai al profilo
+            header("Location: profile.php?msg=" . urlencode("Nota privata creata con successo!"));
+        }
+        exit();
     } else {
+        // In caso di errore, rimani nella pagina con messaggio di errore
         $messaggio = "Errore durante il salvataggio.";
     }
     $stmt->close();
 }
+
+$messaggio = "";
 ?>
 
 <!DOCTYPE html>
@@ -50,27 +59,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </header>
 
 <main class="container">
-  <h1>Crea una nuova nota</h1>
+  <div class="form-modifica">
+    <h1>Crea una nuova nota</h1>
 
-  <?php if ($messaggio): ?>
-    <p><?= htmlspecialchars($messaggio) ?></p>
-  <?php endif; ?>
+    <?php if ($messaggio): ?>
+      <p id="noteMessage"><?= htmlspecialchars($messaggio) ?></p>
+    <?php endif; ?>
 
-  <form method="post">
-    <input type="text" name="titolo" class="form-control" placeholder="Titolo della nota" required><br>
-    <textarea name="testo" rows="5" class="form-control" placeholder="Scrivi la tua nota qui..." required></textarea><br>
-    <input type="text" name="tag" class="form-control" placeholder="Tag (es. scuola, personale)"><br>
-    <input type="text" name="cartella" class="form-control" placeholder="Cartella (es. lavoro, università)"><br>
+    <form method="post">
+      <label>Titolo della nota</label>
+      <input type="text" name="titolo" placeholder="Titolo della nota" required>
 
-    <div class="checkbox-group">
-      <label class="checkbox-label">
-        <input type="checkbox" name="pubblica"> Rendi pubblica
-      </label>
-      <label class="checkbox-label">
-        <input type="checkbox" name="allow_edit"> Permetti modifica ad altri
-      </label>
-    </div>
-    <br> <button type="submit" class="add-note-btn">Salva Nota</button>
+      <label>Testo della nota</label>
+      <textarea name="testo" rows="10" placeholder="Scrivi la tua nota qui..." required></textarea>
+
+      <label>Tag</label>
+      <input type="text" name="tag" placeholder="Tag (es. scuola, personale)">
+
+      <label>Cartella</label>
+      <input type="text" name="cartella" placeholder="Cartella (es. lavoro, università)">
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" name="pubblica"> Rendi pubblica
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="allow_edit"> Permetti modifica ad altri
+        </label>
+      </div>
+
+      <button type="submit">Salva Nota</button>
+    </form>
+  </div>
 </main>
 
 <footer>
