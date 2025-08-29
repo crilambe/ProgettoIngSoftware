@@ -43,4 +43,15 @@ CREATE TABLE Note (
     FOREIGN KEY (autore) REFERENCES Utente(username)
 );
 
-
+CREATE TABLE IF NOT EXISTS NoteRevision (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  note_id INT NOT NULL,
+  editor VARCHAR(255) NOT NULL,
+  titolo TEXT NOT NULL,
+  testo  LONGTEXT NOT NULL,
+  tag VARCHAR(255),
+  cartella VARCHAR(255),
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (note_id),
+  CONSTRAINT fk_rev_note FOREIGN KEY (note_id) REFERENCES Note(id) ON DELETE CASCADE
+);

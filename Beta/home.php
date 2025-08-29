@@ -100,6 +100,12 @@ $cartelle = $resultCartelle->fetch_all(MYSQLI_ASSOC);
   </section>
 
   <section class="notes-section">
+    <?php if (isset($_GET['msg'])): ?>
+      <div id="noteMessage" style="margin-bottom: 20px;">
+        <?= htmlspecialchars($_GET['msg']) ?>
+      </div>
+    <?php endif; ?>
+    
     <div style="display:flex; justify-content: space-between; align-items: center;">
       <h2>Note pubbliche</h2>
       <a href="newnote.php" class="btn-new-note">+ Nuova Nota</a>
